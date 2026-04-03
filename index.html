@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Onboarda Test Page — Document QA Layer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f1117;
+      color: #fff;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page-bg {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,.20), transparent 60%),
+        radial-gradient(ellipse 50% 40% at 80% 10%, rgba(139,92,246,.14), transparent 60%),
+        linear-gradient(180deg, #0c0e14 0%, #111522 100%);
+      z-index: -2;
+    }
+    #particles-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px) saturate(160%);
+      background: rgba(12,14,20,.72);
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .header-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      font-weight: 800;
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(79,70,229,.35);
+    }
+    .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -.4px; }
+    .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-primary, .btn-secondary {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .25s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(79,70,229,.28);
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(79,70,229,.36); }
+    .btn-secondary {
+      background: rgba(255,255,255,.03);
+      color: rgba(255,255,255,.82);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .btn-secondary:hover { border-color: rgba(129,140,248,.5); color: #fff; }
+
+    .hero {
+      padding: 42px 0 28px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+    .card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 20px;
+      box-shadow: 0 24px 60px rgba(0,0,0,.22);
+    }
+    .hero-card {
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(99,102,241,.18), transparent 35%);
+      pointer-events: none;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(79,70,229,.14);
+      color: #c7d2fe;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+    .tag-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #818cf8;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.5); opacity: .45; }
+    }
+    .hero-title {
+      font-size: 52px;
+      line-height: 1.04;
+      letter-spacing: -2px;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #4f46e5, #8b5cf6, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      max-width: 760px;
+      color: rgba(255,255,255,.62);
+      font-size: 17px;
+      line-height: 1.75;
+      margin-bottom: 28px;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 10px;
+    }
+    .stat-box {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .stat-value { font-size: 28px; font-weight: 800; }
+    .stat-label { font-size: 12px; color: rgba(255,255,255,.42); margin-top: 4px; }
+
+    .panel {
+      padding: 24px;
+    }
+    .panel-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      color: rgba(255,255,255,.40);
+      margin-bottom: 16px;
+    }
+    .summary-list { display: grid; gap: 12px; }
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .summary-item strong { display: block; font-size: 14px; }
+    .summary-item span { color: rgba(255,255,255,.48); font-size: 12px; }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .chip.green { background: rgba(22,163,74,.14); color: #86efac; }
+    .chip.orange { background: rgba(217,119,6,.14); color: #fdba74; }
+    .chip.red { background: rgba(220,38,38,.14); color: #fca5a5; }
+    .chip.indigo { background: rgba(99,102,241,.16); color: #c7d2fe; }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 24px;
+      padding-bottom: 36px;
+    }
+    .section-card {
+      padding: 24px;
+      min-height: 100%;
+    }
+    .section-heading {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -.7px;
+      margin-bottom: 8px;
+    }
+    .section-sub {
+      color: rgba(255,255,255,.54);
+      font-size: 14px;
+      line-height: 1.65;
+      margin-bottom: 22px;
+    }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,.56);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .8px;
+    }
+    .input, .select, .textarea {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.035);
+      color: #fff;
+      padding: 14px 14px;
+      font: inherit;
+      outline: none;
+      transition: .2s ease;
+    }
+    .input:focus, .select:focus, .textarea:focus {
+      border-color: rgba(99,102,241,.6);
+      box-shadow: 0 0 0 3px rgba(99,102,241,.16);
+    }
+    .textarea { min-height: 130px; resize: vertical; }
+    .dropzone {
+      border: 1.5px dashed rgba(129,140,248,.45);
+      border-radius: 18px;
+      padding: 22px;
+      background: rgba(79,70,229,.08);
+      text-align: center;
+      transition: .2s ease;
+      cursor: pointer;
+    }
+    .dropzone:hover { background: rgba(79,70,229,.11); border-color: rgba(129,140,248,.7); }
+    .dropzone strong { display: block; font-size: 15px; margin-bottom: 6px; }
+    .dropzone p { color: rgba(255,255,255,.56); font-size: 13px; }
+    .hidden { display: none !important; }
+
+    .files-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .file-row {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .file-row small { color: rgba(255,255,255,.46); display: block; margin-top: 2px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+    .score-ring-wrap {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .score-ring {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(#6366f1 0deg, #6366f1 0deg, rgba(255,255,255,.08) 0deg);
+      position: relative;
+    }
+    .score-ring::after {
+      content: '';
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: #111522;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .score-ring span {
+      position: relative;
+      z-index: 1;
+      font-weight: 800;
+      font-size: 20px;
+    }
+    .meta-title { font-size: 20px; font-weight: 800; letter-spacing: -.5px; }
+    .meta-sub { color: rgba(255,255,255,.5); font-size: 14px; margin-top: 4px; }
+
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .status-box {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .status-box .big { font-size: 26px; font-weight: 800; }
+    .status-box .label { font-size: 12px; color: rgba(255,255,255,.44); margin-top: 4px; }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .tab-btn {
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      color: rgba(255,255,255,.72);
+      border-radius: 12px;
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: rgba(99,102,241,.14);
+      color: #e0e7ff;
+      border-color: rgba(99,102,241,.35);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .table-wrap {
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.02);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      text-align: left;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      vertical-align: top;
+      font-size: 14px;
+    }
+    th {
+      font-size: 11px;
+      color: rgba(255,255,255,.42);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      font-weight: 700;
+      background: rgba(255,255,255,.02);
+    }
+    tr:last-child td { border-bottom: none; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .muted { color: rgba(255,255,255,.5); }
+
+    .issue-list, .timeline-list, .checks-list {
+      display: grid;
+      gap: 12px;
+    }
+    .issue-item, .timeline-item, .check-item {
+      padding: 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .issue-item h4, .timeline-item h4, .check-item h4 {
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+    .issue-item p, .timeline-item p, .check-item p {
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .review-banner {
+      margin-top: 18px;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(217,119,6,.26);
+      background: rgba(217,119,6,.10);
+      color: #fed7aa;
+      display: none;
+    }
+    .review-banner.show { display: block; }
+
+    .footer-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid, .main-grid { grid-template-columns: 1fr; }
+      .hero-stats, .status-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 720px) {
+      .shell, .header-inner { padding-left: 16px; padding-right: 16px; }
+      .hero-title { font-size: 38px; letter-spacing: -1px; }
+      .hero-stats, .status-grid, .grid-2 { grid-template-columns: 1fr; }
+      .panel, .hero-card, .section-card { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-bg"></div>
+  <canvas id="particles-canvas"></canvas>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-mark">O</div>
+        <div>
+          <div class="logo-text">Onboarda</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.42)">Test Page — Safer document extraction</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary" id="load-sample-btn">Load Sample</button>
+        <button class="btn-primary" id="run-analysis-btn">Run Validation Layer</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="hero-grid">
+        <div class="card hero-card">
+          <div class="tag"><span class="tag-dot"></span>Document QA + Human-in-the-loop</div>
+          <h1 class="hero-title">Keep the <span class="gradient-text">same look</span>.<br>Fix the bad AI output.</h1>
+          <p class="hero-sub">
+            This standalone test page adds a validation layer between document upload and final onboarding output. Instead of trusting one extraction pass,
+            it cross-checks fields, scores confidence, flags weak evidence, and routes risky cases for human review.
+          </p>
+          <div class="hero-stats">
+            <div class="stat-box"><div class="stat-value" id="stat-docs">0</div><div class="stat-label">Documents loaded</div></div>
+            <div class="stat-box"><div class="stat-value" id="stat-fields">0</div><div class="stat-label">Fields extracted</div></div>
+            <div class="stat-box"><div class="stat-value" id="stat-conf">0%</div><div class="stat-label">Confidence score</div></div>
+            <div class="stat-box"><div class="stat-value" id="stat-flags">0</div><div class="stat-label">Review flags</div></div>
+          </div>
+        </div>
+
+        <div class="card panel">
+          <div class="panel-title">What this page fixes</div>
+          <div class="summary-list">
+            <div class="summary-item">
+              <div><strong>Low-confidence extraction</strong><span>Stops weak OCR / AI guesses from going straight into onboarding</span></div>
+              <div class="chip orange">Guardrail</div>
+            </div>
+            <div class="summary-item">
+              <div><strong>Field mismatches</strong><span>Checks names, numbers, dates, and registration values across files</span></div>
+              <div class="chip red">Cross-check</div>
+            </div>
+            <div class="summary-item">
+              <div><strong>Missing evidence</strong><span>Every extracted value needs a source file and confidence band</span></div>
+              <div class="chip indigo">Traceable</div>
+            </div>
+            <div class="summary-item">
+              <div><strong>Slow manual review</strong><span>Only sends edge cases to review instead of everything</span></div>
+              <div class="chip green">Faster</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="card section-card">
+        <h2 class="section-heading">Upload + validation settings</h2>
+        <p class="section-sub">Use this as a separate test page. It does not change the live layout. It gives you a cleaner extraction flow you can later connect to the real backend.</p>
+
+        <div class="field">
+          <label>Client name</label>
+          <input class="input" id="client-name" placeholder="e.g. Meridian Holdings Ltd" />
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Entity type</label>
+            <select class="select" id="entity-type">
+              <option value="Company">Company</option>
+              <option value="Individual">Individual</option>
+              <option value="Trust">Trust</option>
+              <option value="Foundation">Foundation</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Document pack</label>
+            <select class="select" id="document-pack">
+              <option value="Standard KYC">Standard KYC</option>
+              <option value="Enhanced Due Diligence">Enhanced Due Diligence</option>
+              <option value="Corporate Onboarding">Corporate Onboarding</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Auto-approve threshold</label>
+            <select class="select" id="approve-threshold">
+              <option value="92">92%</option>
+              <option value="90" selected>90%</option>
+              <option value="88">88%</option>
+              <option value="85">85%</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Human review threshold</label>
+            <select class="select" id="review-threshold">
+              <option value="75">75%</option>
+              <option value="80" selected>80%</option>
+              <option value="82">82%</option>
+              <option value="85">85%</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Upload documents</label>
+          <label class="dropzone" for="file-input">
+            <strong>Drop files here or click to upload</strong>
+            <p>PDF, PNG, JPG, DOCX. This test page uses file names and manual text input for now.</p>
+          </label>
+          <input id="file-input" type="file" multiple class="hidden" />
+          <div class="files-list" id="files-list"></div>
+        </div>
+
+        <div class="field">
+          <label>Raw extracted text / OCR dump</label>
+          <textarea class="textarea" id="raw-text" placeholder="Paste OCR output, extracted text, or AI extraction input here..."></textarea>
+        </div>
+
+        <div class="footer-actions">
+          <button class="btn-primary" id="analyze-btn">Analyze documents</button>
+          <button class="btn-secondary" id="reset-btn">Reset</button>
+        </div>
+      </div>
+
+      <div class="card section-card">
+        <div class="result-top">
+          <div class="score-ring-wrap">
+            <div class="score-ring" id="score-ring"><span id="score-ring-text">0%</span></div>
+            <div>
+              <div class="meta-title" id="decision-title">Awaiting analysis</div>
+              <div class="meta-sub" id="decision-sub">Upload or load sample documents to test the validation layer.</div>
+            </div>
+          </div>
+          <div class="chip indigo" id="decision-chip">No result yet</div>
+        </div>
+
+        <div class="status-grid">
+          <div class="status-box"><div class="big" id="quality-score">0</div><div class="label">Quality score</div></div>
+          <div class="status-box"><div class="big" id="field-count">0</div><div class="label">Verified fields</div></div>
+          <div class="status-box"><div class="big" id="issue-count">0</div><div class="label">Issues found</div></div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="fields">Extracted fields</button>
+          <button class="tab-btn" data-tab="issues">Issues</button>
+          <button class="tab-btn" data-tab="checks">Validation checks</button>
+          <button class="tab-btn" data-tab="timeline">Processing log</button>
+        </div>
+
+        <div class="tab-panel active" id="tab-fields">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Extracted value</th>
+                  <th>Confidence</th>
+                  <th>Source</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="fields-table-body">
+                <tr>
+                  <td colspan="5" class="muted">No analysis yet.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-issues">
+          <div class="issue-list" id="issue-list">
+            <div class="issue-item"><h4>No issues yet</h4><p>Run analysis to detect missing fields, mismatches, weak evidence, and review blockers.</p></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-checks">
+          <div class="checks-list" id="checks-list">
+            <div class="check-item"><h4>No checks run</h4><p>The validation layer will score document coverage, field consistency, evidence traceability, and approval readiness.</p></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="tab-timeline">
+          <div class="timeline-list" id="timeline-list">
+            <div class="timeline-item"><h4>No events yet</h4><p>Pipeline activity will appear here.</p></div>
+          </div>
+        </div>
+
+        <div class="review-banner" id="review-banner"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    (function particles(){
+      const canvas = document.getElementById('particles-canvas');
+      const ctx = canvas.getContext('2d');
+      const particles = [];
+      function resize(){
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      for(let i=0;i<70;i++){
+        particles.push({
+          x: Math.random()*canvas.width,
+          y: Math.random()*canvas.height,
+          vx: (Math.random()-.5)*.28,
+          vy: (Math.random()-.5)*.28,
+          r: Math.random()*2+.4,
+          o: Math.random()*.24+.05
+        });
+      }
+      function draw(){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        for(const p of particles){
+          p.x += p.vx; p.y += p.vy;
+          if(p.x < 0) p.x = canvas.width;
+          if(p.x > canvas.width) p.x = 0;
+          if(p.y < 0) p.y = canvas.height;
+          if(p.y > canvas.height) p.y = 0;
+          ctx.beginPath();
+          ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle = `rgba(99,102,241,${p.o})`;
+          ctx.fill();
+        }
+        for(let i=0;i<particles.length;i++){
+          for(let j=i+1;j<particles.length;j++){
+            const dx = particles[i].x-particles[j].x;
+            const dy = particles[i].y-particles[j].y;
+            const d = Math.sqrt(dx*dx+dy*dy);
+            if(d < 125){
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = `rgba(99,102,241,${(1-d/125)*.08})`;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    const state = {
+      files: [],
+      result: null
+    };
+
+    const sampleText = `Certificate of Incorporation\nMeridian Holdings Ltd\nRegistration Number: C18492\nDate of Incorporation: 14 January 2021\nRegistered Address: 7 Harbour Street, Port Louis, Mauritius\n\nPassport\nFull Name: Ravi N. Sewchurn\nPassport Number: MAU782134\nDate of Birth: 03/09/1988\nNationality: Mauritian\nExpiry Date: 11/05/2030\n\nUtility Bill\nName: Ravi Sewchurn\nAddress: 7 Harbour Street, Port Louis, Mauritius\nIssue Date: 04 February 2026\n\nUBO Declaration\nUltimate Beneficial Owner: Ravi Sewchurn\nOwnership: 82%\nSource of Funds: Consulting income and retained earnings\n`;
+
+    const sampleFiles = [
+      { name: 'certificate_of_incorporation.pdf', size: 482000, type: 'application/pdf' },
+      { name: 'passport_ravi_sewchurn.jpg', size: 220000, type: 'image/jpeg' },
+      { name: 'utility_bill_feb_2026.pdf', size: 315000, type: 'application/pdf' },
+      { name: 'ubo_declaration.docx', size: 94000, type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }
+    ];
+
+    function formatBytes(bytes){
+      if(!bytes && bytes !== 0) return '—';
+      const units = ['B','KB','MB','GB'];
+      let i = 0;
+      let n = bytes;
+      while(n >= 1024 && i < units.length-1){ n /= 1024; i++; }
+      return `${n.toFixed(n >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
+    }
+
+    function renderFiles(){
+      const wrap = document.getElementById('files-list');
+      if(!state.files.length){
+        wrap.innerHTML = '';
+        return;
+      }
+      wrap.innerHTML = state.files.map(file => `
+        <div class="file-row">
+          <div>
+            <strong>${escapeHtml(file.name)}</strong>
+            <small>${escapeHtml(file.type || 'unknown')} · ${formatBytes(file.size || 0)}</small>
+          </div>
+          <span class="chip indigo">Loaded</span>
+        </div>
+      `).join('');
+      document.getElementById('stat-docs').textContent = String(state.files.length);
+    }
+
+    function escapeHtml(str){
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function setRing(percent){
+      const ring = document.getElementById('score-ring');
+      const text = document.getElementById('score-ring-text');
+      const deg = Math.max(0, Math.min(100, percent)) * 3.6;
+      ring.style.background = `conic-gradient(#6366f1 0deg, #6366f1 ${deg}deg, rgba(255,255,255,.08) ${deg}deg)`;
+      text.textContent = `${percent}%`;
+    }
+
+    function extractField(pattern, text){
+      const match = text.match(pattern);
+      return match ? match[1].trim() : '';
+    }
+
+    function normalizeText(v){
+      return String(v || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+    }
+
+    function confidenceBand(value, base){
+      if(!value) return Math.max(40, base - 35);
+      return Math.min(99, base);
+    }
+
+    function buildResult(){
+      const text = document.getElementById('raw-text').value || '';
+      const clientNameInput = document.getElementById('client-name').value.trim();
+      const approveThreshold = Number(document.getElementById('approve-threshold').value);
+      const reviewThreshold = Number(document.getElementById('review-threshold').value);
+      const now = new Date();
+
+      const companyName = clientNameInput || extractField(/(?:Certificate of Incorporation|Company|Entity Name)\s*[:\-]?\s*([A-Za-z0-9 .,&'-]+(?:Ltd|Limited|Inc|LLC)?)/i, text) || extractField(/\n([A-Za-z][A-Za-z0-9 .,&'-]+(?:Ltd|Limited|Inc|LLC))\n/i, text);
+      const regNumber = extractField(/Registration Number\s*[:\-]?\s*([A-Z0-9\-]+)/i, text);
+      const incorporationDate = extractField(/Date of Incorporation\s*[:\-]?\s*([^\n]+)/i, text);
+      const passportName = extractField(/Full Name\s*[:\-]?\s*([^\n]+)/i, text);
+      const passportNumber = extractField(/Passport Number\s*[:\-]?\s*([A-Z0-9\-]+)/i, text);
+      const dob = extractField(/Date of Birth\s*[:\-]?\s*([^\n]+)/i, text);
+      const nationality = extractField(/Nationality\s*[:\-]?\s*([^\n]+)/i, text);
+      const expiry = extractField(/Expiry Date\s*[:\-]?\s*([^\n]+)/i, text);
+      const utilityName = extractField(/Utility Bill[\s\S]*?Name\s*[:\-]?\s*([^\n]+)/i, text) || extractField(/Name\s*[:\-]?\s*([^\n]+)/i, text);
+      const address = extractField(/(?:Registered Address|Address)\s*[:\-]?\s*([^\n]+)/i, text);
+      const issueDate = extractField(/Issue Date\s*[:\-]?\s*([^\n]+)/i, text);
+      const uboName = extractField(/Ultimate Beneficial Owner\s*[:\-]?\s*([^\n]+)/i, text);
+      const ownership = extractField(/Ownership\s*[:\-]?\s*([^\n]+)/i, text);
+      const sourceOfFunds = extractField(/Source of Funds\s*[:\-]?\s*([^\n]+)/i, text);
+
+      const fields = [
+        { field: 'Company Name', value: companyName, source: 'certificate_of_incorporation.pdf', confidence: confidenceBand(companyName, 95) },
+        { field: 'Registration Number', value: regNumber, source: 'certificate_of_incorporation.pdf', confidence: confidenceBand(regNumber, 96) },
+        { field: 'Date of Incorporation', value: incorporationDate, source: 'certificate_of_incorporation.pdf', confidence: confidenceBand(incorporationDate, 94) },
+        { field: 'Passport Holder Name', value: passportName, source: 'passport.jpg', confidence: confidenceBand(passportName, 88) },
+        { field: 'Passport Number', value: passportNumber, source: 'passport.jpg', confidence: confidenceBand(passportNumber, 91) },
+        { field: 'Date of Birth', value: dob, source: 'passport.jpg', confidence: confidenceBand(dob, 87) },
+        { field: 'Nationality', value: nationality, source: 'passport.jpg', confidence: confidenceBand(nationality, 89) },
+        { field: 'Passport Expiry', value: expiry, source: 'passport.jpg', confidence: confidenceBand(expiry, 92) },
+        { field: 'Proof of Address Name', value: utilityName, source: 'utility_bill.pdf', confidence: confidenceBand(utilityName, 79) },
+        { field: 'Registered / Residential Address', value: address, source: 'utility_bill.pdf', confidence: confidenceBand(address, 93) },
+        { field: 'Proof of Address Issue Date', value: issueDate, source: 'utility_bill.pdf', confidence: confidenceBand(issueDate, 84) },
+        { field: 'UBO Name', value: uboName, source: 'ubo_declaration.docx', confidence: confidenceBand(uboName, 90) },
+        { field: 'Ownership %', value: ownership, source: 'ubo_declaration.docx', confidence: confidenceBand(ownership, 90) },
+        { field: 'Source of Funds', value: sourceOfFunds, source: 'ubo_declaration.docx', confidence: confidenceBand(sourceOfFunds, 86) }
+      ].map(item => ({
+        ...item,
+        status: item.value ? (item.confidence >= approveThreshold ? 'Verified' : item.confidence >= reviewThreshold ? 'Needs Review' : 'Weak') : 'Missing'
+      }));
+
+      const issues = [];
+      const checks = [];
+      const timeline = [];
+
+      timeline.push({ title: 'Upload intake complete', body: `${state.files.length || 0} files staged for extraction.` });
+      timeline.push({ title: 'OCR / raw text loaded', body: text ? `Input contains ${text.length} characters of extracted text.` : 'No OCR text provided. Output quality will be weak.' });
+      timeline.push({ title: 'Field extraction finished', body: `${fields.filter(f => f.value).length} of ${fields.length} fields returned a value.` });
+
+      checks.push({ title: 'Document coverage', body: state.files.length >= 3 ? 'Enough supporting files were provided for a baseline onboarding review.' : 'Too few documents loaded. Coverage is below expected onboarding minimum.' });
+      checks.push({ title: 'Evidence traceability', body: fields.every(f => f.source) ? 'Every extracted field has a source reference.' : 'Some extracted fields do not show a clear origin file.' });
+      checks.push({ title: 'Confidence gating', body: `Fields below ${reviewThreshold}% are blocked from auto-approval. Fields between ${reviewThreshold}% and ${approveThreshold - 1}% are routed to review.` });
+
+      const lowConfidenceFields = fields.filter(f => f.confidence < reviewThreshold || !f.value);
+      const reviewFields = fields.filter(f => f.confidence >= reviewThreshold && f.confidence < approveThreshold);
+
+      if(!text.trim()){
+        issues.push({ title: 'No OCR / extraction input provided', body: 'The page cannot validate the AI output without raw extracted text. Add OCR output or model input first.', severity: 'red' });
+      }
+      if(!companyName){
+        issues.push({ title: 'Company name missing', body: 'The certificate text did not return a reliable company name.', severity: 'red' });
+      }
+      if(passportName && utilityName && normalizeText(passportName) !== normalizeText(utilityName)){
+        issues.push({ title: 'Name mismatch across documents', body: `Passport shows “${passportName}” while proof of address shows “${utilityName}”. This must be reviewed.`, severity: 'orange' });
+      }
+      if(passportName && uboName && normalizeText(passportName) !== normalizeText(uboName)){
+        issues.push({ title: 'UBO identity mismatch', body: `Passport holder and UBO declaration do not perfectly match: “${passportName}” vs “${uboName}”.`, severity: 'orange' });
+      }
+      if(!regNumber){
+        issues.push({ title: 'Registration number missing', body: 'Corporate registration data is required for company onboarding.', severity: 'red' });
+      }
+      if(!address){
+        issues.push({ title: 'Address not extracted', body: 'Registered or residential address could not be confirmed from the files.', severity: 'red' });
+      }
+      if(!issueDate){
+        issues.push({ title: 'Proof of address date missing', body: 'The proof of address date could not be extracted, so freshness cannot be checked.', severity: 'orange' });
+      }
+      if(lowConfidenceFields.length){
+        issues.push({ title: 'Low-confidence fields detected', body: `${lowConfidenceFields.length} extracted fields are below the review threshold or missing.`, severity: 'orange' });
+      }
+
+      const baseConfidence = fields.reduce((sum, f) => sum + (f.value ? f.confidence : 35), 0) / fields.length;
+      const penalty = (issues.length * 4) + (Math.max(0, 3 - state.files.length) * 5);
+      const finalConfidence = Math.max(18, Math.min(99, Math.round(baseConfidence - penalty)));
+
+      let decision = 'Auto-Approve';
+      let decisionSub = 'Extraction quality is strong enough to move forward without manual review.';
+      let chip = { text: 'Approved path', cls: 'green' };
+
+      if(finalConfidence < reviewThreshold || issues.some(i => i.severity === 'red')){
+        decision = 'Manual Review Required';
+        decisionSub = 'The validation layer blocked this onboarding pack because confidence or consistency is too weak.';
+        chip = { text: 'Review blocked', cls: 'red' };
+      } else if(finalConfidence < approveThreshold || reviewFields.length > 0 || issues.length > 0) {
+        decision = 'Needs Officer Review';
+        decisionSub = 'The extraction is usable, but one or more fields require confirmation before approval.';
+        chip = { text: 'Review queue', cls: 'orange' };
+      }
+
+      timeline.push({ title: 'Decision engine complete', body: `${decision} at ${finalConfidence}% confidence.` });
+
+      return {
+        finalConfidence,
+        decision,
+        decisionSub,
+        chip,
+        qualityScore: finalConfidence,
+        verifiedFields: fields.filter(f => f.status === 'Verified').length,
+        issueCount: issues.length,
+        fields,
+        issues,
+        checks,
+        timeline,
+        lowConfidenceFields
+      };
+    }
+
+    function renderResult(result){
+      state.result = result;
+      setRing(result.finalConfidence);
+      document.getElementById('decision-title').textContent = result.decision;
+      document.getElementById('decision-sub').textContent = result.decisionSub;
+      document.getElementById('decision-chip').className = `chip ${result.chip.cls}`;
+      document.getElementById('decision-chip').textContent = result.chip.text;
+
+      document.getElementById('quality-score').textContent = String(result.qualityScore);
+      document.getElementById('field-count').textContent = String(result.verifiedFields);
+      document.getElementById('issue-count').textContent = String(result.issueCount);
+
+      document.getElementById('stat-fields').textContent = String(result.fields.filter(f => f.value).length);
+      document.getElementById('stat-conf').textContent = `${result.finalConfidence}%`;
+      document.getElementById('stat-flags').textContent = String(result.issueCount);
+
+      const tbody = document.getElementById('fields-table-body');
+      tbody.innerHTML = result.fields.map(field => {
+        const cls = field.status === 'Verified' ? 'green' : field.status === 'Needs Review' ? 'orange' : 'red';
+        return `
+          <tr>
+            <td>${escapeHtml(field.field)}</td>
+            <td>${field.value ? escapeHtml(field.value) : '<span class="muted">Missing</span>'}</td>
+            <td class="mono">${field.confidence}%</td>
+            <td class="mono muted">${escapeHtml(field.source)}</td>
+            <td><span class="chip ${cls}">${escapeHtml(field.status)}</span></td>
+          </tr>
+        `;
+      }).join('');
+
+      const issueWrap = document.getElementById('issue-list');
+      issueWrap.innerHTML = result.issues.length ? result.issues.map(issue => `
+        <div class="issue-item">
+          <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px">
+            <h4>${escapeHtml(issue.title)}</h4>
+            <span class="chip ${issue.severity}">${issue.severity === 'red' ? 'Critical' : 'Review'}</span>
+          </div>
+          <p>${escapeHtml(issue.body)}</p>
+        </div>
+      `).join('') : '<div class="issue-item"><h4>No issues found</h4><p>The current document pack passed all validation checks.</p></div>';
+
+      const checksWrap = document.getElementById('checks-list');
+      checksWrap.innerHTML = result.checks.map(check => `
+        <div class="check-item">
+          <h4>${escapeHtml(check.title)}</h4>
+          <p>${escapeHtml(check.body)}</p>
+        </div>
+      `).join('');
+
+      const timelineWrap = document.getElementById('timeline-list');
+      timelineWrap.innerHTML = result.timeline.map((item, idx) => `
+        <div class="timeline-item">
+          <h4>${idx + 1}. ${escapeHtml(item.title)}</h4>
+          <p>${escapeHtml(item.body)}</p>
+        </div>
+      `).join('');
+
+      const reviewBanner = document.getElementById('review-banner');
+      if(result.decision !== 'Auto-Approve'){
+        reviewBanner.classList.add('show');
+        reviewBanner.textContent = result.decision === 'Manual Review Required'
+          ? 'Blocked from auto-onboarding. An officer must review the flagged fields before this pack can proceed.'
+          : 'Routed to review queue. The pack is usable, but some fields need confirmation.';
+      } else {
+        reviewBanner.classList.remove('show');
+        reviewBanner.textContent = '';
+      }
+    }
+
+    function analyze(){
+      const result = buildResult();
+      renderResult(result);
+    }
+
+    function resetPage(){
+      state.files = [];
+      state.result = null;
+      document.getElementById('client-name').value = '';
+      document.getElementById('entity-type').value = 'Company';
+      document.getElementById('document-pack').value = 'Standard KYC';
+      document.getElementById('approve-threshold').value = '90';
+      document.getElementById('review-threshold').value = '80';
+      document.getElementById('raw-text').value = '';
+      renderFiles();
+      setRing(0);
+      document.getElementById('decision-title').textContent = 'Awaiting analysis';
+      document.getElementById('decision-sub').textContent = 'Upload or load sample documents to test the validation layer.';
+      document.getElementById('decision-chip').className = 'chip indigo';
+      document.getElementById('decision-chip').textContent = 'No result yet';
+      document.getElementById('quality-score').textContent = '0';
+      document.getElementById('field-count').textContent = '0';
+      document.getElementById('issue-count').textContent = '0';
+      document.getElementById('stat-docs').textContent = '0';
+      document.getElementById('stat-fields').textContent = '0';
+      document.getElementById('stat-conf').textContent = '0%';
+      document.getElementById('stat-flags').textContent = '0';
+      document.getElementById('fields-table-body').innerHTML = '<tr><td colspan="5" class="muted">No analysis yet.</td></tr>';
+      document.getElementById('issue-list').innerHTML = '<div class="issue-item"><h4>No issues yet</h4><p>Run analysis to detect missing fields, mismatches, weak evidence, and review blockers.</p></div>';
+      document.getElementById('checks-list').innerHTML = '<div class="check-item"><h4>No checks run</h4><p>The validation layer will score document coverage, field consistency, evidence traceability, and approval readiness.</p></div>';
+      document.getElementById('timeline-list').innerHTML = '<div class="timeline-item"><h4>No events yet</h4><p>Pipeline activity will appear here.</p></div>';
+      const reviewBanner = document.getElementById('review-banner');
+      reviewBanner.classList.remove('show');
+      reviewBanner.textContent = '';
+    }
+
+    function loadSample(){
+      state.files = [...sampleFiles];
+      document.getElementById('client-name').value = 'Meridian Holdings Ltd';
+      document.getElementById('raw-text').value = sampleText;
+      renderFiles();
+      analyze();
+    }
+
+    document.getElementById('file-input').addEventListener('change', (e) => {
+      state.files = Array.from(e.target.files || []);
+      renderFiles();
+    });
+
+    document.getElementById('load-sample-btn').addEventListener('click', loadSample);
+    document.getElementById('run-analysis-btn').addEventListener('click', analyze);
+    document.getElementById('analyze-btn').addEventListener('click', analyze);
+    document.getElementById('reset-btn').addEventListener('click', resetPage);
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+      });
+    });
+
+    resetPage();
+  </script>
+</body>
+</html>
